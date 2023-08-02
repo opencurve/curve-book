@@ -74,16 +74,33 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'More',
+            title: '常用链接',
             items: [
               {
-                label: 'GitHub',
-                href: 'https://github.com/opencurve/curve',
+                label: '官网',
+                href: 'https://www.opencurve.io/',
+              },
+              {
+                label: '论坛',
+                href: 'https://ask.opencurve.io/',
+              },
+            ],
+          },
+          {
+            title: '联系我们',
+            items: [
+              {
+                 label: '微信',
+                 href: 'https://www.opencurve.io/WeChat',
+              },
+              {
+                label: 'Slack',
+                href: 'https://cloud-native.slack.com/archives/C03LFPT6BJM',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Opencurve Team. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Curve Team. Documentation Distributed under CC-BY-4.0. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
