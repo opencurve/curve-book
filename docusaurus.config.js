@@ -116,6 +116,7 @@ const config = {
         hashed: true,
         language: ["en", "zh"],
         docsRouteBasePath: '/',
+        indexBlog: false,
       }),
     ],
   ],
