@@ -18,6 +18,10 @@ CurveFS的核心应用场景主要包括：
 - 混合云存储：热数据存储在本地IDC，冷数据存储在公有云
 
 
+## Curve 架构概览
+![curve-arch](./images/Curve-arch.png)
+
+
 ##  反馈及交流
 
 - [Github Issues](https://github.com/opencurve/curve/issues)：欢迎提交BUG、建议，使用中如遇到问题可参考FAQ或加入我们的User group进行咨询。
