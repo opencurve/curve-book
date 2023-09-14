@@ -51,56 +51,82 @@ The biggest difference: Curve supports file storage. If you want to know some di
 
 ### 5. Curve与JuiceFS的区别是什么？ / What is the difference between Curve and JuiceFS?
 
-最大的区别是： Curve支持块存储，CurveFS支持CurveBS存储后端，也支持S3存储后端，后续还会支持在CurveBS和S3之间进行数据生命周期管理。如果你想了解某些细节差异，可以通过微信群/slack/论坛联系我们沟通确认。
+主要区别有以下几点：
+   - Curve支持块存储，CurveFS支持CurveBS存储后端，也支持S3存储后端，后续还会支持在CurveBS和S3之间进行数据生命周期管理。如果你想了解某些细节差异，可以通过微信群/slack/论坛联系我们沟通确认。
+   - CurveFS的元数据引擎是自研的，基于raft实现的3副本存储，具有高可用高可靠高可扩等特性。
+   - CurveFS的缓存支持内存buffer、本地磁盘、分布式kv缓存这几个等级，类似CPU的L1、L2、L3 cache设计
 
-The biggest difference is that Curve supports block storage, CurveFS supports the CurveBS storage backend, and also supports the S3 storage backend, and will support data lifecycle management between CurveBS and S3 in the future. If you want to know some differences in details, you can contact us through WeChat group/slack/forum to communicate and confirm.
+The main differences are as follows:
+   - Curve supports block storage, and CurveFS supports CurveBS storage backend and S3 storage backend. It will also support data life cycle management between CurveBS and S3 in the future. If you want to know about some detailed differences, you can contact us through WeChat group/slack/forum for communication and confirmation.
+   - CurveFS's metadata engine is self-developed and is based on 3-copy storage implemented in raft. It has the characteristics of high availability, high reliability and high scalability.
+   - CurveFS's cache supports memory buffer, local disk, and distributed kv cache levels, similar to the CPU's L1, L2, and L3 cache design.
 
-### 6. Curve能用在什么场景下？ / In what scenarios can Curve be used?
+### 6. Curve与HDFS/S3FS/JindoFS/RapidFS/GooseFS/Alluxio的区别是什么？ / What is the difference between Curve and HDFS/S3FS/JindoFS/RapidFS/GooseFS/Alluxio？
+
+首先Curve包括CurveBS块存储和CurveFS文件存储，因此CurveFS可以与这几个FS进行比较，我们的优势主要包括：
+   - CurveFS提供与HDFS API完全兼容的SDK，支持 Hadoop 生态用户无缝迁移
+   - 与HDFS相比：CurveFS支持存储计算分离，计算资源可以灵活配置和伸缩，存储资源由对象存储提供也可独立伸缩；尤其适合云上业务替换HDFS，并且通过数据和元数据缓存加速IO访问，性能优异；元数据无单点瓶颈，可扩展性强，支持百亿级的文件存储。
+   - 相比对象存储：提供完整的POSIX语义支持，良好适配大数据生态组件；元数据操作性能优异且强一致性；N 倍以上的元数据操作（list、rename 等）性能提升，数据读写性能也能提升N倍，欢迎实测体验。
+
+与其他几个FS的区别是：
+   - JindoFS/RapidFS等的block模式与CurveFS架构比较类似，但相比公有云厂商的产品，CurveFS更加中立，且完全开源（目前已捐献给CNCF基金会），另外CurveFS除了支持对象存储外，也支持自研数据存储引擎CurveBS，可以私有化部署
+   - Alluxio与JindoFS/RapidFS等的缓存模式类似，仅作为对象存储的缓存加速组件而不保存元数据，对象存储的元数据操作的一致性问题和性能瓶颈均无法解决
+
+First of all, Curve includes CurveBS block storage and CurveFS file storage, so CurveFS can be compared with these FS. Our advantages mainly include:
+   - Fully compatible with HDFS API and seamlessly adapted to Hadoop ecological components.
+   - Compared with HDFS: elastic scaling of capacity; separation of storage and computing, computing resources can be flexibly configured and scaled; compared with self-built HDFS on the cloud using cloud disks, the cost is saved by more than 60%, while providing read and write performance comparable to HDFS; support POSIX and S3 interfaces use one storage to adapt to the access needs of different businesses; JuiceFS commercial version provides fully managed SaaS services with zero operation and maintenance, and can support tens of billions of file storage in a single command space.
+   - Compared with object storage: it provides complete POSIX semantic support, good adaptability of big data ecological components; strong consistency of metadata operations; more than N times the performance of metadata operations (list, rename, etc.) is improved, and the data reading and writing performance is also improved It can be improved by N times. Real test experience is welcome.
+
+The differences from other FS are:
+   - The block mode of JindoFS/RapidFS is similar to the CurveFS architecture, but compared to the products of public cloud vendors, CurveFS is more neutral and completely open source (currently donated to the CNCF Foundation). In addition, CurveFS also supports object storage. Self-developed data storage engine CurveBS can be deployed privately
+   - The caching mode of Alluxio is similar to that of JindoFS/RapidFS. It only serves as a cache acceleration component of object storage without saving metadata. The consistency problem and performance bottleneck of metadata operations of object storage cannot be solved.
+
+### 7. Curve能用在什么场景下？ / In what scenarios can Curve be used?
 
 Curve能使用的主要场景如下：
 - 对接 OpenStack 平台为云主机提供高性能块存储服务；
 - 对接 Kubernetes 为其提供 RWO、RWX 等类型的持久化存储卷；
 - 对接 PolarFS 作为云原生数据库的高性能存储底座，完美支持云原生数据库的存算分离架构；
-- Curve 亦可作为云存储中间件使用 S3 兼容的对象存储作为数据存储引擎，为公有云用户提供高性价比的共享文件存储；
-- 支持在物理机上挂载使用块设备或FUSE文件系统
+- Curve 亦可作为云存储中间件使用 S3 兼容的对象存储作为数据存储引擎，为公有云、私有云用户提供高性价比的共享文件存储；核心应用场景包括AI训练存储、大数据HDFS替换、ElasticSearch/ClickHouse冷数据存储等，可为此类应用实现降本增效
+- 支持在物理机上挂载使用块设备或FUSE文件系统，作为替换NAS存储、NFS等的共享存储，同时也支持SMB协议
 
 
 The main scenarios where Curve can be used are as follows:
 - Connect to the OpenStack platform to provide high-performance block storage services for cloud hosts;
 - Connect to Kubernetes to provide persistent storage volumes of RWO, RWX and other types;
 - Connecting with PolarFS as a high-performance storage base for cloud-native databases, it perfectly supports the storage-computation separation architecture of cloud-native databases;
-- Curve can also be used as a cloud storage middleware to use S3-compatible object storage as a data storage engine, providing cost-effective shared file storage for public cloud users;
-- Support mount using block device or FUSE file system on physical machine
+- Curve can also be used as cloud storage middleware using S3-compatible object storage as a data storage engine to provide cost-effective shared file storage for public cloud and private cloud users; core application scenarios include AI training storage, big data HDFS replacement, ElasticSearch / ClickHouse cold data storage, etc., can reduce costs and increase efficiency for such applications.
+- Supports mounting block devices or FUSE file systems on physical machines as shared storage to replace NAS storage, NFS, etc., and also supports the SMB protocol.
 
-### 7. Curve的云原生存储能力是如何体现的？ / How does Curve's cloud-native storage capability manifest?
+### 8. Curve的云原生存储能力是如何体现的？ / How does Curve's cloud-native storage capability manifest?
 
 主要体现在以下几点：
-- 云原生部署：支持curveadm+docker部署方式；支持helm部署方式；支持chart部署方式；后续有计划支持rook部署方式
+- 云原生部署：支持curveadm+docker部署方式；支持k8s operator部署
 - 云原生使用：支持CSI配合K8S作为持久化卷使用（RWO、RWX等）
-- 云原生运维：支持curveadm+docker运维，计划支持rook运维
+- 云原生运维：支持curveadm+docker运维，支持k8s operator日常运维及监控
 
 Mainly reflected in the following points:
-- Cloud native deployment: support curveadm+docker deployment method; support helm deployment method; support chart deployment method; follow-up plans to support rook deployment method
+- Cloud native deployment: support curveadm+docker deployment method; support k8s+operator deployment method
 - Cloud native use: support CSI with K8S as persistent volume (RWO, RWX, etc.)
-- Cloud native O&M: support curveadm+docker O&M, plan to support rook O&M
+- Cloud native O&M: support curveadm+docker O&M, k8s+operator O&M
 
-### 8. Curve是否有在生产环境使用过？规模如何？稳定性如何？有无出现过大规模故障？ / Has Curve been used in a production environment? What is the scale? How is the stability? Has there been a massive failure?
+### 9. Curve是否有在生产环境使用过？规模如何？稳定性如何？有无出现过大规模故障？ / Has Curve been used in a production environment? What is the scale? How is the stability? Has there been a massive failure?
 
 CurveBS块存储已在网易内部使用近3年，运行稳定，存储数据量数PB，无大规模故障。另外也有多家社区用户在使用CurveBS，目前未收到大规模故障反馈。
 
-CurveFS目前已发布稳定版本，已在网易内部业务落地使用中。
+CurveFS目前已发布多个稳定版本，已在网易内外部AI训练存储、HDFS替换、ES冷数据等业务落地使用中。
 
 
-CurveBS block storage has been used within NetEase for nearly 3 years (since mid-2019), with serveral PB data storage, and no large-scale failures. In addition, many community users are using CurveBS, and no large-scale failure feedback has been received so far.
+CurveBS block storage has been used within NetEase for 4 years (since mid-2019), with serveral PB data storage, and no large-scale failures. In addition, many community users are using CurveBS, and no large-scale failure feedback has been received so far.
 
-CurveFS has not yet released a stable version (will be released in the near future), and it will first be used within NetEase after its release.
+CurveFS has currently released multiple stable versions and is being used in NetEase's internal and external AI training storage, HDFS replacement, ES cold data and other businesses.
 
-### 9. Curve的Roadmap是什么？ / What is Curve's Roadmap?
+### 10. Curve的Roadmap是什么？ / What is Curve's Roadmap?
 
-- 中文版：https://github.com/opencurve/curve/wiki/Roadmap_CN
-- English：https://github.com/opencurve/curve/wiki/Roadmap
+- https://docs.opencurve.io/category/roadmap
 
-### 10. Curve开源的目标/目的是什么？ / What is the goal/purpose of Curve open source?
+
+### 11. Curve开源的目标/目的是什么？ / What is the goal/purpose of Curve open source?
 
 在现今的云基础设施领域，云原生应用如火如荼的在互联网行业落地，传统行业也开始有所实践。但是如果我们深入调查云原生基础设施3大板块：计算、存储、网络，你就能发现，云原生存储项目非常稀缺，开源的更少，如果再附加上稳定、高性能、公有云私有云均可使用的灵活弹性、简单易运维这些云原生场景下对存储系统的基础要求，则市面上基本没有合适的系统可供选择。基于上述原因，我们在2018年决定立项研发更好用的云原生存储系统：Curve。
 
@@ -117,7 +143,7 @@ The initial goal of Curve was to solve the pain points of using open source Ceph
 
 Curve's vision: to build Curve into an open source cloud-native distributed storage system with excellent performance, applicable to all scenarios, stable and easy operation and maintenance.
 
-### 11. Curve社区的沟通渠道有哪些？ / What are the communication channels of the Curve community?
+### 12. Curve社区的沟通渠道有哪些？ / What are the communication channels of the Curve community?
 
 
 - 微信群：添加微信号opencurve_bot邀请进群
@@ -133,7 +159,6 @@ Curve's vision: to build Curve into an open source cloud-native distributed stor
 - slack: cloud-native.slack.com, channel #project_curve
 - GitHub isue: https://github.com/opencurve/curve/issues
 - Mailing list: Coming soon
-
 
 
 ## 部署运维相关
@@ -275,9 +300,9 @@ Curve supports compute-storage hybrid deployment.
 
 ### 12. Curve 是否支持 rook？是否可以用 k8s 部署？/ Does Curve support rook? Is it possible to deploy with k8s?
 
-Curve 目前并不支持 rook，但适配 rook 已经考虑纳入 Curve 的 roadmap 中。关于 K8S 部署，目前 Curve 已提供相应的 CSI，包括 [curvebs-csi](https://github.com/opencurve/curve-csi) 和 [curvefs-csi](https://github.com/h0hmj/curvefs-csi)，而服务端加入 K8S 也在 Curve 的开发计划当中（云原生是 Curve 重要的定位之一，后续会在该领域投入更多精力）。
+Curve 目前并不支持 rook，但已支持通过 operator 在 K8S 上部署 [curve-operator](https://github.com/opencurve/curve-operator)，目前 Curve 已提供相应的 CSI，包括 [curvebs-csi](https://github.com/opencurve/curve-csi) 和 [curvefs-csi](https://github.com/h0hmj/curvefs-csi)。
 
-Curve does not currently support rooks, but the adaptation of rooks has been considered for inclusion in Curve's roadmap. Regarding K8S deployment, Curve has provided corresponding CSI, including [curvebs-csi](https://github.com/opencurve/curve-csi) and [curvefs-csi](https://github.com/h0hmj/curvefs-csi), and the server-side addition of K8S is also in Curve's development plan (cloud native is one of Curve's important positioning, and will be invested in this field in the future. more energy)
+Curve currently does not support rook, but it has supported deployment of [curve-operator](https://github.com/opencurve/curve-operator) on K8S through operator. Currently Curve has provided corresponding CSI, including [curvebs-csi ](https://github.com/opencurve/curve-csi) and [curvefs-csi](https://github.com/h0hmj/curvefs-csi).
 
 ## 版本发布及打包相关
 ### 1、Curve版本发布周期是什么样的？版本号是如何定义的？/ What is the release cycle of Curve version? How is the version number defined?
@@ -495,6 +520,12 @@ There is no such thing in terms of architecture, and there are still many places
 You can refer to the [roadmap](https://github.com/opencurve/curve/wiki/Roadmap)
 
 
+### 8. CurveBS是否兼容librbd协议？ / Is CurveBS compatible with librbd protocol?
+
+我们做了探索，目前已有demo方案，可以在openstack+libirt+qemu的组合场景下使用，感兴趣的可以测试优化，相关细节可以参考官网或者公众号文章。
+
+We have done some research and now have a demo solution that can be used in the combination scenario of openstack+libirt+qemu. Those who are interested can test the optimization. For relevant details, please refer to the official website or official account article.
+
 ## 功能相关
 
 ### 1. Curve的功能清单在哪里可以看到？ / Where can I find a list of Curve's features?
@@ -523,15 +554,15 @@ Yes, you need to compile Libvirt, patches repository: https://github.com/opencur
 
 ### 5. Curve是否支持块存储？文件存储？对象存储？ / Does Curve support block storage? file storage? Object storage?
 
-Curve支持块存储、文件存储，不支持对象存储（基于文件存储扩展支持S3协议接口在计划中）。
+Curve支持块存储、文件存储，不支持对象存储（基于文件存储扩展支持S3协议可通过第三方gateway实现，可查询Curve官网文档或公众号文章了解详情）。
 
-Curve supports block storage and file storage, but does not support object storage (the S3 protocol interface based on file storage extension is planned).
+Curve supports block storage and file storage, but does not support object storage (supporting the S3 protocol based on the file storage extension can be implemented through a third-party gateway. You can check the Curve official website documentation or public account articles for details).
 
 ### 6. Curve是否支持客户端缓存？缓存的可靠性、数据一致性如何保证？ / Does Curve support client-side caching? How to ensure cache reliability and data consistency?
 
 CurveBS块存储不支持客户端缓存，服务端缓存可以理解为是文件系统的pagecache。
 
-CurveFS文件存储支持客户端缓存，包括内存和磁盘两种形态：内存缓存的数据可靠性无法保证（遵循POSIX语义，未flush或者close的数据可能丢失）；磁盘缓存需要由磁盘本身可靠性保证（建议使用RAID1等冗余模式）。多客户端的缓存数据一致性无法保证，但会定期更新，如果有强一致性需求，建议关闭磁盘缓存。
+CurveFS文件存储支持客户端缓存，包括内存、磁盘、分布式kv 三种形态：内存缓存的数据可靠性无法保证（遵循POSIX语义，未flush或者close的数据可能丢失）；磁盘缓存需要由磁盘本身可靠性保证（建议使用RAID1等冗余模式）。多客户端的缓存数据一致性无法保证，但会定期更新，如果有强一致性需求，建议关闭磁盘缓存。
 
 有关缓存的实现细节可以参考：[Caches](https://github.com/opencurve/curve/wiki/Curve%E6%BA%90%E7%A0%81%E5%8F%8A%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E6%B7%B1%E5%BA%A6%E8%A7%A3%E8%AF%BB#16-caches)
 
@@ -543,16 +574,16 @@ The implementation details of the cache can refer to [Caches](https://github.com
 
 ### 7. Curve服务端是否支持磁盘缓存？或者说类似ceph的wal/db缓存盘如何配置？ / Does the Curve server support disk caching? Or how to configure the wal/db cache disk similar to ceph?
 
-可以将CurveBS chunkserver的wal文件保存到高性能磁盘设备上，数据盘使用低速磁盘设备。部署工具的支持正在开发中。
+CurveBS 1.2.7版本已支持混合存储（混闪），支持使用NVME做HDD的缓存盘进行加速，curveadm工具已支持部署，如有问题欢迎微信等渠道联系我们。
 
-The wal file of the CurveBS chunkserver can be saved to a high-performance disk device, and the data disk uses a low-speed disk device. Deployment tool support is in development.
+CurveBS version 1.2.7 already supports hybrid storage (mixed flash) and supports the use of NVME as HDD cache disk for acceleration. The curveadm tool has supported deployment. If you have any questions, please contact us through WeChat and other channels.
 
 
 ### 8. Curve是否支持不同磁盘类型组成不同的存储池？ / Does Curve support different disk types to form different storage pools?
 
-暂不支持，相关功能已在开发计划中。
+CurveBS 1.2.7版本已支持poolset功能，每个poolset对应一个磁盘类型，可包含多个pool，支持增加pool的方式来扩容poolset。
 
-Currently not supported, related functions are already in the development plan.
+CurveBS version 1.2.7 already supports the poolset function. Each poolset corresponds to a disk type and can contain multiple pools. It supports adding pools to expand the poolset.
 
 ### 9. Curve是否支持存储池扩容？是否支持缩容？ / Does Curve support storage pool scale-out? Does it support scale-in?
 
@@ -592,29 +623,61 @@ File storage: update data after release2.3 test
 
 ### 2. Curve测试过哪些硬件规格下的性能？/ What hardware specifications Curve has tested for performance?
 
-块存储：HDD、Sata SSD、NVME
+块存储：NVME+HDD、Sata SSD、NVME
 
 文件存储：元数据 Sata SSD; 数据 S3
 
-Block Storage: HDD, Sata SSD, NVME
+Block Storage: NVME+HDD, Sata SSD, NVME
 
 File Storage: Metadata Sata SSD; Data S3
 
 ### 3. Curve的性能相比Ceph高不少是怎么做到的？/ The performance of Curve is much higher than that of Ceph. How is it done?
 
-从架构上来说，Curve使用Quorum机制的一致性协议，写大多数返回，延迟取决于多副本最快的大多数; Ceph使用强一致协议，写所有副本返回，延迟取决于最慢的那一个。工程实践的细节上就很难一一做对比了
+从架构上来说，CurveBS使用Quorum机制的一致性协议，写大多数返回，延迟取决于多副本最快的大多数; Ceph使用强一致协议，写所有副本返回，延迟取决于最慢的那一个。工程实践的细节上就很难一一做对比了
 
-Architecturally, Curve uses the consensus protocol of the Quorum mechanism, writing the majority to return, and the delay depends on the fastest majority of multiple copies; Ceph uses a strong consensus protocol, writing all copies to return, and the delay depends on the slowest one. It is difficult to compare the details of engineering practice.
+Architecturally, CurveBS uses the consensus protocol of the Quorum mechanism, writing the majority to return, and the delay depends on the fastest majority of multiple copies; Ceph uses a strong consensus protocol, writing all copies to return, and the delay depends on the slowest one. It is difficult to compare the details of engineering practice.
+
+CurveFS 则主要通过轻量级的CTO一致性保证，以及元数据和数据多级缓存来实现更优异的性能。
+
+CurveFS mainly achieves better performance through lightweight CTO consistency guarantees and multi-level caching of metadata and data.
+
 
 ### 4. Curve在性能优化方面的规划有哪些？演进方向是？/ What are Curve's plans for performance optimization? What is the direction of evolution
 
 重点考虑点是工程实践上的：磁盘io和网络io可以bypass kernel，支持更高性能的磁盘
 
-更多地可以参考[roadmap](https://github.com/opencurve/curve/wiki/Roadmap_CN)
+更多地可以参考[roadmap](https://docs.opencurve.io/category/roadmap)
 
 The key consideration is engineering practice: disk io and network io can bypass the kernel and support higher-performance disks.
 
-For more information, please refer to the [roadmap](https://github.com/opencurve/curve/wiki/Roadmap).
+For more information, please refer to the [roadmap](https://docs.opencurve.io/category/roadmap).
+
+
+### 5. Curve 当前的性能瓶颈点是什么？会不会对我的业务产生影响？
+
+CurveBS的性能瓶颈需要针对具体的存储介质来讨论：
+   - 对于固态盘比如NVMe盘，瓶颈点一般在网络时延和IO协议栈以及IO处理的线程模型等几个方面，我们在网络方面支持了RDMA，在IO协议栈方面支持了SPDK，IO处理线程我们基于BRPC和SPDK框架实现了零拷贝，当然还有很多需要优化的点，欢迎参与贡献。
+   - 对于HDD，我们目前还没有很好的支持，因此不推荐使用，建议配合NVMe缓存盘做混闪（混合存储）部署
+   - 另外我们在顺序大IO的写入方面也有一定的性能瓶颈，原因在用raft的wal和data双写导致的写放大问题，我们已经在设计方案解决中
+
+CurveFS的性能瓶颈主要包括：
+   - 元数据的rename操作，目前已经在开发优化中
+   - 元数据的网络访问时延，我们计划支持客户端到元数据服务端的RDMA网络
+   - 对象存储数据后端的吞吐和IOPS限制，目前我们是通过多级缓存来加速
+
+这些瓶颈点一般不影响普通业务的使用，如果有极端的性能需求，欢迎与我们交流探讨。
+
+The performance bottleneck of CurveBS needs to be discussed based on specific storage media:
+    - For solid-state disks such as NVMe disks, bottlenecks generally lie in network latency, IO protocol stack, and IO processing thread model. We support RDMA in the network, SPDK in the IO protocol stack, and IO processing threads. We have implemented zero copy based on the BRPC and SPDK frameworks. Of course, there are still many points that need to be optimized. Welcome to contribute.
+    - For HDD, we currently do not have good support, so it is not recommended to use it. It is recommended to use NVMe cache disk for hybrid flash (hybrid storage) deployment
+    - In addition, we also have certain performance bottlenecks in sequential large IO writing. The reason is the write amplification problem caused by double writing of wal and data in raft, which we are already solving in the design plan.
+
+The performance bottlenecks of CurveFS mainly include:
+    - The rename operation of metadata is currently under development and optimization.
+    - Metadata network access delay, we plan to support RDMA network from client to metadata server
+    - The throughput and IOPS limitations of the object storage data backend are currently accelerated by multi-level caching.
+
+These bottlenecks generally do not affect the use of ordinary services. If you have extreme performance requirements, please feel free to discuss them with us.
 
 ## 云原生数据库相关
 ### 1. Curve支持云原生数据库的架构是什么样的（以polardb for pg为例）？
