@@ -668,14 +668,14 @@ CurveFS的性能瓶颈主要包括：
 这些瓶颈点一般不影响普通业务的使用，如果有极端的性能需求，欢迎与我们交流探讨。
 
 The performance bottleneck of CurveBS needs to be discussed based on specific storage media:
-    - For solid-state disks such as NVMe disks, bottlenecks generally lie in network latency, IO protocol stack, and IO processing thread model. We support RDMA in the network, SPDK in the IO protocol stack, and IO processing threads. We have implemented zero copy based on the BRPC and SPDK frameworks. Of course, there are still many points that need to be optimized. Welcome to contribute.
-    - For HDD, we currently do not have good support, so it is not recommended to use it. It is recommended to use NVMe cache disk for hybrid flash (hybrid storage) deployment
-    - In addition, we also have certain performance bottlenecks in sequential large IO writing. The reason is the write amplification problem caused by double writing of wal and data in raft, which we are already solving in the design plan.
+   - For solid-state disks such as NVMe disks, bottlenecks generally lie in network latency, IO protocol stack, and IO processing thread model. We support RDMA in the network, SPDK in the IO protocol stack, and IO processing threads. We have implemented zero copy based on the BRPC and SPDK frameworks. Of course, there are still many points that need to be optimized. Welcome to contribute.
+   - For HDD, we currently do not have good support, so it is not recommended to use it. It is recommended to use NVMe cache disk for hybrid flash (hybrid storage) deployment
+   - In addition, we also have certain performance bottlenecks in sequential large IO writing. The reason is the write amplification problem caused by double writing of wal and data in raft, which we are already solving in the design plan.
 
 The performance bottlenecks of CurveFS mainly include:
-    - The rename operation of metadata is currently under development and optimization.
-    - Metadata network access delay, we plan to support RDMA network from client to metadata server
-    - The throughput and IOPS limitations of the object storage data backend are currently accelerated by multi-level caching.
+   - The rename operation of metadata is currently under development and optimization.
+   - Metadata network access delay, we plan to support RDMA network from client to metadata server
+   - The throughput and IOPS limitations of the object storage data backend are currently accelerated by multi-level caching.
 
 These bottlenecks generally do not affect the use of ordinary services. If you have extreme performance requirements, please feel free to discuss them with us.
 
