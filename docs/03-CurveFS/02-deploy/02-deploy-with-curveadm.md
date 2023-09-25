@@ -1,4 +1,4 @@
-#  使用 CurveAdm 部署 CurveFS 集群
+#  物理机部署 CurveFS 集群
 为了提升 Curve 的运维便利性，我们设计开发了 [CurveAdm](https://github.com/opencurve/curveadm) 项目，其主要用于部署和管理 Curve 集群，目前已支持部署CurveBS & CurveFS，相关使用文档请参考 [CurveAdm用户手册](https://github.com/opencurve/curveadm/wiki)，并根据手册首先安装CurveAdm工具之后再进行Curve集群的部署。
 
 ##  部署 CurveFS 集群

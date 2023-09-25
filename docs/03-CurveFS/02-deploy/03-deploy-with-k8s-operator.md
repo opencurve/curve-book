@@ -1,4 +1,4 @@
-# 使用 Curve Operator 在 Kubernetes 上部署 CurveFS 集群
+# Kubernetes 上部署 CurveFS 集群
 
 `curve-operator`代码仓库：https://github.com/opencurve/curve-operator/blob/master/docs/readme_cn.md
 
