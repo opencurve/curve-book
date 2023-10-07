@@ -7,34 +7,34 @@
 ### Curve镜像准备
 
 1. 拉取镜像
-Curve官方镜像（如`opencurve/curve/curvefs:v2.4`）到本地环境（可访问外网的机器）
+Curve官方镜像（如`opencurvedocker/curvebs:v1.2`）到本地环境（可访问外网的机器）
 
 ```bash
-$ sudo docker pull opencurve/curve/curvefs:v2.4
+$ sudo docker pull opencurvedocker/curvebs:v1.2
 ```
 
 2. 导出镜像
 ```bash
 # 查看下载到的Curve镜像，镜像版本、id和大小为示例，具体以实际为准，下同
 $ sudo docker image ls
-opencurve/curve/curvefs  v2.4  5717f16d4bec   1 months ago   1.84GB
+opencurvedocker/curvebs  v1.2  5717f16d4bec   1 months ago   1.84GB
 
 # 导出镜像
-$ sudo  docker save -o curve_v2.4.tar 5717f16d4bec
+$ sudo  docker save -o curve_v1.2.tar 5717f16d4bec
 ```
 
 3. 拷贝镜像到本地仓库节点
 ```bash
-$ scp curve_v2.4.tar  ${desthost}:/path/to/save/image
+$ scp curve_v1.2.tar  ${desthost}:/path/to/save/image
 ```
 
 4. 导入镜像
 ```bash
-$ docker load --input curve_v2.4.tar
+$ docker load --input curve_v1.2.tar
 
 # 查看导入的镜像
 $ sudo  docker image ls 
-opencurve/curve/curvefs  v2.4  5717f16d4bec   1 months ago   1.84GB
+opencurvedocker/curvebs  v1.2  5717f16d4bec   1 months ago   1.84GB
 ```
 
 ### 本地镜像仓库搭建
@@ -47,30 +47,30 @@ $ docker run -d -p 5000:5000 --restart=always --name registry registry
 ```
 
 2. 标记Curve镜像
-标记下载到的Curve镜像，比如把下载来的镜像（`opencurve/curve/curvefs:v2.4`）标记为`127.0.0.1:5000/curvefs:v2.4_local`（其中`127.0.0.1`为本地仓库服务IP，`5000`为本地仓库服务端口号，请根据实际环境修改）
+标记下载到的Curve镜像，比如把下载来的镜像（`opencurvedocker/curvebs:v1.2`）标记为`127.0.0.1:5000/curvebs:v1.2_local`（其中`127.0.0.1`为本地仓库服务IP，`5000`为本地仓库服务端口号，请根据实际环境修改）
 
 ```bash
 # 查看下载到的Curve镜像
 $ sudo  docker image ls 
-opencurve/curve/curvefs  v2.4  5717f16d4bec   1 months ago   1.84GB
+opencurvedocker/curvebs  v1.2  5717f16d4bec   1 months ago   1.84GB
 
 # 标记镜像
-$ sudo docker tag opencurve/curve/curvefs:v2.4  127.0.0.1:5000/curvefs:v2.4_local
+$ sudo docker tag opencurvedocker/curvebs:v1.2  127.0.0.1:5000/curvebs:v1.2_local
 
 # 查看标记完的镜像
 $ sudo  docker image ls
- 127.0.0.1:5000/curvefs                           v2.4_local                       5717f16d4bec   13 months ago   1.84GB
+ 127.0.0.1:5000/curvebs                           v1.2_local                       5717f16d4bec   13 months ago   1.84GB
 ```
 
 3. 上传镜像
 ```bash
-$ docker push 127.0.0.1:5000/curvefs:v2.4_local
+$ docker push 127.0.0.1:5000/curvebs:v1.2_local
 ```
 
 更多详情可参考[私有仓库搭建](https://yeasy.gitbook.io/docker_practice/repository/registry)
 
 ### 修改镜像地址
-修改客户端部署配置文件`client.yaml`以及服务端集群部署配置文件`topology.yaml`中的镜像地址配置项（`container_image`）为本地仓库镜像地址（如：`127.0.0.1:5000/curvefs:v2.4_local`）
+修改客户端部署配置文件`client.yaml`以及服务端集群部署配置文件`topology.yaml`中的镜像地址配置项（`container_image`）为本地仓库镜像地址（如：`127.0.0.1:5000/curvebs:v1.2_local`）
 
 
 ## 部署
@@ -101,18 +101,18 @@ $ export PATH=~/.curveadm/bin:$PATH
 需修改`topology.yaml`中的镜像为本地镜像地址，示例如下：
 
 ```yaml
-kind: curvefs
+kind: curvebs
 global:
-  container_image: 127.0.0.1:5000/curvefs:v2.4_local  ## 修改为本地镜像
+  container_image: 127.0.0.1:5000/curvebs:v1.2_local  ## 修改为本地镜像
 ```
 其他的配置项请参考文档 [CurveFS集群部署](https://github.com/opencurve/curveadm/wiki/curvefs-cluster-deployment) 或 [CurveBS集群部署](https://github.com/opencurve/curveadm/wiki/curvebs-cluster-deployment)
 
 ### client端部署
 需修改`client.yaml`中的镜像为本地镜像地址，示例如下：
 ```yaml
-kind: curvefs
+kind: curvebs
 global:
-  container_image: 127.0.0.1:5000/curvefs:v2.4_local ## 修改为本地镜像
+  container_image: 127.0.0.1:5000/curvebs:v1.2_local ## 修改为本地镜像
 ```
 
 其他的配置项请参考文档 [部署CurveFS客户端](https://github.com/opencurve/curveadm/wiki/curvefs-client-deployment) 或 [部署CurveBS客户端](https://github.com/opencurve/curveadm/wiki/curvebs-client-deployment)

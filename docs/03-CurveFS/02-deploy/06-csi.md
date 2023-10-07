@@ -1,6 +1,6 @@
-# Curvefs CSI 驱动程序
+# CurveFS CSI 驱动程序
 
-## 介绍
+## 简介
 
 CurveFS CSI 驱动程序实现容器编排器的 CSI 规范来管理 CurveFS 文件系统。
 
