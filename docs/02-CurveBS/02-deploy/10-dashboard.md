@@ -96,7 +96,7 @@ email.auth: password or authCode           # 管理邮箱授权码或密码
 ![0717-forget-password.png](../../images/0717-forget-password.png)
 
 ### 用户管理
-(../../images/
+
 admin用户可以对系统用户进行管理，包括创建，权限修改，删除。每个用户可以修改自己的个人信息，目前主要包括邮箱和密码。
 
 ![0717-user-management.png](../../images/0717-user-management.png)
