@@ -2,7 +2,7 @@
 slug: /faq
 ---
 
-# 常见FAQ
+# FAQ
 
 ## 关于Curve
 
