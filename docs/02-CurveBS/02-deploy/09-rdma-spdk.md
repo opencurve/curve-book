@@ -23,7 +23,19 @@
 
 ### 开启 IOMMU
 
-修改 /etc/default/grub，在 GRUB_COMMAND_LINE 最后加入 `intel_iommu=on`，然后执行 `grub2-mkconfig -o /boot/grub2/grub.cfg` 并重启机器。
+修改 /etc/default/grub，在 GRUB_COMMAND_LINE 最后加入 `intel_iommu=on`，根据 BIOS 模式更新不同的 grub.cfg 文件
+
+```bash
+$ test -d /sys/firmware/efi && echo "UEFI" || echo "Legacy"
+
+# Legacy 模式
+$ grub2-mkconfig -o /boot/grub2/grub.cfg
+
+# UEFI 模式
+$ grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+```
+
+然后重启机器。
 
 ### 调整 memlock 限制
 
