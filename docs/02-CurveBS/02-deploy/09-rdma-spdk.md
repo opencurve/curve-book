@@ -23,7 +23,19 @@
 
 ### 开启 IOMMU
 
-修改 /etc/default/grub，在 GRUB_COMMAND_LINE 最后加入 `intel_iommu=on`，然后执行 `grub2-mkconfig -o /boot/grub2/grub.cfg` 并重启机器。
+修改 /etc/default/grub，在 GRUB_COMMAND_LINE 最后加入 `intel_iommu=on`，根据 BIOS 模式更新不同的 grub.cfg 文件
+
+```bash
+$ test -d /sys/firmware/efi && echo "UEFI" || echo "Legacy"
+
+# Legacy 模式
+$ grub2-mkconfig -o /boot/grub2/grub.cfg
+
+# UEFI 模式
+$ grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+```
+
+然后重启机器。
 
 ### 调整 memlock 限制
 
@@ -218,6 +230,21 @@ fio -name=/dev/nbd0 -direct=1 -iodepth=128 -rw=randwrite -ioengine=libaio -bs=4k
 cbd 引擎测试可以避免 nbd 挂载带来的额外开销，在单卷测试中，会有更高的性能。
 
 为了方便编译，如下命令以在 curveadm map 创建的容器内执行
+
+- 进入容器
+  
+```bash
+$ curveadm client status
+Get Client Status: [OK]
+
+Id            Kind     Host    Container Id  Status     Aux Info
+--            ----     ----    ------------  ------     --------
+5f1c10fd4d71  curvebs  curve1  dcbb6b69028e  Up 9 days  {"user":"test","volume":"/curve"}
+
+$ curveadm client enter 5f1c10fd4d71  # 替换为上面输出的实际Id
+```
+
+- 在容器内编译并执行 fio 测试
 
 ```bash
 $ git clone https://github.com/opencurve/fio.git -b curve
