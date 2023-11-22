@@ -6,9 +6,7 @@
 
 ## Why Curve？
 
-<div align="center">
-	<img src="../../images/ai_curvefs_architecture.png" alt="Editor" width="500"/>
-</div>
+![curvefs arch](../../images/ai_curvefs_architecture.png)
 
 
 
@@ -22,9 +20,7 @@ Curve 文件系统同时支持 POSIX、HDFS和K8s CSI 接入方式，可以满�
 
 Curve 文件系统原数据引擎具有**高可用**、**高可靠**和**高可扩**的特点，数据的可靠性和可用性通过 Raft 协议保证，元数据经过分片均匀分散在不同的 Raft-Group 中，保证了数据和负载的均衡性，同时支持业务按需进行一键弹性扩缩容。
 
-<div align="center">
-	<img src="../../images/ai_curvefs_metadata_architecture.png" width="500"/>
-</div>
+![curvefs arch](../../images/ai_curvefs_metadata_architecture.png)
 
 ### 3. 高性能
 
@@ -34,9 +30,7 @@ Curve 文件系统原数据引擎具有**高可用**、**高可靠**和**高可�
 
 元数据支持内核和本地的多级缓存，并提供灵活的缓存配置，用户可以根据自己业务的特点配置合适的缓存失效时间，以在满足一致性要求的前提下获取更高的操作性能。此外，通过结合VFS层的重试机制，Curve 文件系统提供了完善的 CTO（close-to-open）一致性。
 
-<div align="center">
-	<img src="../../images/ai_curvefs_metadata_cache.png" width="700"/>
-</div>
+![curvefs arch](../../images/ai_curvefs_metadata_cache.png)
 
 ```shell
 Kernel Cache -> 通用缓存
@@ -64,9 +58,7 @@ fs.dirCache.lruSize=5000000
 2. 本地磁盘缓存：用于加速当前节点上的读写速度（开启共享（cto）时，数据会同时刷一份到共享缓存中，如果没配置共享缓存则需要上传到后端数据存储引擎）。
 3. 共享缓存：用于加速跨节点间的数据共享速度。
 
-<div align="center">
-	<img src="../../images/curvefs-data-cache-arch.webp" width="700"/>
-</div>
+![curvefs arch](../../images/curvefs-data-cache-arch.webp)
 
 为了加速数据的读取速度，Curve 文件系统支持数据的预读和预热。
 
@@ -74,9 +66,7 @@ fs.dirCache.lruSize=5000000
 
 **预热（warmup）**：指用户在使用到某部分数据之前主动的触发该部分数据写到指定缓存层，提高使用时的性能，例如在 AI 训练场景下，可以提前将训练数据集预热到缓存中，来加速整个训练过程。
 
-<div align="center">
-	<img src="../../images/ai_curvefs_warmup.png" width="700"/>
-</div>
+![curvefs arch](../../images/ai_curvefs_warmup.png)
 
 ## 降本增效成果
 
