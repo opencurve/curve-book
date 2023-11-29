@@ -28,4 +28,4 @@
 
 ## 命令行工具
 - CurveFS 提供了命令行工具以查看集群状态和进行基本集群操作：[命令行工具说明](https://docs.opencurve.io/CurveBS/maintenance/command-line-tools)
-- 对于集群管理员，可以参阅管理员指导文档来完成对集群的运维管理工作：[运维工具说明](https://docs.opencurve.io/CurveBS/maintenance/administrator-guide)
+- 对于集群管理员，可以参阅管理员指导文档来完成对集群的运维管理工作：[管理员操作指导](https://docs.opencurve.io/category/%E7%AE%A1%E7%90%86%E5%91%98%E6%93%8D%E4%BD%9C%E6%8C%87%E5%AF%BC)
