@@ -5,4 +5,4 @@
 请参考CurveAdm用户手册中[CurveBS集群部署步骤](https://github.com/opencurve/curveadm/wiki/curvebs-cluster-deployment)，单机体验环境请使用“集群拓扑文件-单机部署”模板。
 
 ## 命令行工具
-curve 提供了命令行工具以查看集群状态和进行基本集群操作：[命令行工具说明](https://github.com/opencurve/curve/blob/master/tools-v2/README.md)
+Curve 提供了命令行工具以查看集群状态和进行基本集群操作：[命令行工具说明](https://docs.opencurve.io/CurveBS/maintenance/command-line-tools)
